@@ -7,5 +7,7 @@ All done inside docker with volume mapped outside to host machine.
 
 #Note:
 1) Change the AWS Secret Key, and AWS Access Key for mariadb-s-backup and restore.
-2) Install xtrabackup and qpress if not installed for mariadb restore from S3
+
+2) Install xtrabackup and qpress if not installed for mariadb restore from S3.
+
 3) Steps are given inside ReadMe file inside every project.
