@@ -1,0 +1,7 @@
+create database test;
+use test;
+create table person(id INT, name VARCHAR(100));
+insert into person value(1,'Ashish');
+insert into person value(2,'Kuntal');
+insert into person value(5555,'xchjkl');
+select * from person;

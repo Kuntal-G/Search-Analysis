@@ -1,0 +1,54 @@
+Change directory to the location where mariadb dockerfile is present
+
+# Export the base directory
+ 
+mkdir -p /mnt/data/mysql
+export MYSQL_DIR=/mnt/data/mysql
+
+# Create directories to be mounted to docker
+
+mkdir -p $MYSQL_DIR/scripts
+mkdir -p $MYSQL_DIR/mysqlbackup/backup
+mkdir -p $MYSQL_DIR/mysqlbackup/backup/current
+mkdir -p $MYSQL_DIR/mysqlbackup/backup/inc1
+mkdir -p $MYSQL_DIR/mysqlbackup/backup/daily
+mkdir -p $MYSQL_DIR/mysqlbackup/backup/dailyUpload
+mkdir -p $MYSQL_DIR/mysqlbackup/backup/incremental
+mkdir -p $MYSQL_DIR/mysqlbackup/backup/incrementalUpload
+
+
+# Verify the directories
+
+ls -l -R $MYSQL_DIR/mysqlbackup/
+
+# Unpack the mysql dependency tar file `mysql-vanila.tar.bz2` in the `mysqlbackup` folder . 
+
+tar -xf mysql-vanila.tar.bz2 -C $MYSQL_DIR/mysqlbackup/
+
+# Verify the files
+
+ls -l $MYSQL_DIR/mysqlbackup/
+
+# Copy the scripts to directory mounted to docker
+
+cp daily_backup_full.sh incremental_backup.sh run.sh $MYSQL_DIR/scripts
+
+
+# BUILD THE DOCKER
+
+docker build -t mariadb .
+
+
+# Use the following command to start docker
+docker run -d -h docker.mysql -v $MYSQL_DIR/mysqlbackup/backup:/etc/mysqlbackup -v $MYSQL_DIR/mysqlbackup/mysql:/var/lib/mysql -v $MYSQL_DIR/mysqlbackup/etcmysql:/etc/mysql -v $MYSQL_DIR/scripts:/mnt/scripts --name mysql -p 3306:3306 bizosys/mariadb bash
+
+# Connect to mysql and Create the database and schema
+mysql -u root -h 127.0.0.1
+source /home/kuntal/Desktop/mariadb-ubuntu/test-database
+exit
+
+# Run the dailybackup script mannually to create base for incremental backup
+docker exec -it mysql sh /mnt/scripts/daily_backup_full.sh
+
+# Connect to mysql
+mysql -u root -h 127.0.0.1

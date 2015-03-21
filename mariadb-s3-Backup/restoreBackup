@@ -1,0 +1,44 @@
+---------------Restore Daily Backup---------------
+note: please install qpress if not installed
+
+cd /tmp
+Download the daily backup file from S3
+
+qpress -d <<File Name>>.qp ./
+tar -xvf <<File Name>>.tar
+docker stop mysql
+
+cd etc/mysqlbackup/current/
+chown -R 102:106 *
+yes | cp -R * /mnt/data/mysql/mysqlbackup/mysql/
+
+docker start mysql
+
+
+---------------Restore Incremental Backup---------------
+note: Please Install xtrabackup and qpress if not installed
+
+
+cd /tmp
+Download the daily backup file from S3
+
+qpress -d <<File Name>>.qp ./
+tar -xvf <<File Name>>.tar
+
+cd etc/mysqlbackup/current/
+
+Download the incremental backup file from S3
+
+/mnt/softwares/qpress -d docker.mysql-2015-03-12-06-28-12-incremental.qp ./
+tar -xvf docker.mysql-2015-03-12-06-28-12-incremental.tar
+
+xtrabackup --prepare --apply-log-only --target-dir=/tmp/etc/mysqlbackup/current --incremental-dir=/tmp/etc/mysqlbackup/inc1
+
+docker stop mysql
+
+cd etc/mysqlbackup/current/
+chown -R 102:106 *
+yes | cp -R * /mnt/data/mysql/mysqlbackup/mysql/
+
+docker start mysql
+

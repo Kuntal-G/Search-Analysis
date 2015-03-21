@@ -1,0 +1,35 @@
+#Copy the tar file from ftp server to application production server in tmp folder
+
+Restore daily backup
+scp -r support@a.b.c.d:~/daily/<<File to be restored>> /tmp
+
+Restore incremental backup
+scp -r support@a.b.c.d:~/incremental/<<File to be restored>> /tmp
+
+
+
+#Untar the file
+cd /tmp/
+tar -xvf <<File to be restored>>
+ls
+cd etc/mysqlbackup/current
+ls -ltr
+
+#Stop tomcat
+/home/softwares/tomcat/bin/shutdown.sh 
+
+# Stop Mysql Service
+docker stop mysql
+
+#Change permissions of restored files
+chown -R messagebus:messagebus *
+
+#copy files to mysql data folder
+cp -R * /home/mysql/mysqlbackup/mysql/
+cd /home/mysql/mysqlbackup/mysql/
+
+#Stop tomcat
+/home/softwares/tomcat/bin/startup.sh
+
+#Start mysql service
+docker start mysql
