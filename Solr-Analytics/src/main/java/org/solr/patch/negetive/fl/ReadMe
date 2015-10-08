@@ -1,0 +1,4 @@
+This patch is for implementation of return fields parsing for Solr with exclusion capability in filed list (fl) tag.
+
+Also this patch is updated to handle custom transformer in fl. The patch is available at:
+
