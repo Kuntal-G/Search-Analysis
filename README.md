@@ -1,4 +1,4 @@
-#Search and Analysis
+# Search and Analysis
 
 This repository contains the following Projects :
 
@@ -18,3 +18,4 @@ This project consist of customize Lucene code( analyzer,filter,tokenizer). Also 
 
 
 # Solr Analytics
+This project consist of customize Solr code (scorer, transformer) along with the return fields exclusion capability in  the (fl) tag.
